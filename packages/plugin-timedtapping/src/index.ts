@@ -273,7 +273,11 @@ class TimedtappingPlugin implements JsPsychPlugin<Info> {
 
         const onTap = (e: Event) => {
           if (nextCue < 0 || pastCue < 0) return;
-          if (trial.response_mode === "keyboard" && (e as KeyboardEvent).key !== " ") return;
+          if (
+            trial.response_mode === "keyboard" &&
+            ((e as KeyboardEvent).key !== " " || (e as KeyboardEvent).repeat)
+          )
+            return;
           const t = e.timeStamp;
           const k1 = t - pastCue; // time since last cue
           const k2 = nextCue - t; // time until next cue
@@ -355,7 +359,11 @@ class TimedtappingPlugin implements JsPsychPlugin<Info> {
       // define tap handler for collecting responses
       const onTap = (e: Event) => {
         if (nextCue < 0 || pastCue < 0) return;
-        if (trial.response_mode === "keyboard" && (e as KeyboardEvent).key !== " ") return;
+        if (
+          trial.response_mode === "keyboard" &&
+          ((e as KeyboardEvent).key !== " " || (e as KeyboardEvent).repeat)
+        )
+          return;
         const t = e.timeStamp;
         const k1 = t - pastCue; // time since last cue
         const k2 = nextCue - t; // time until next cue
