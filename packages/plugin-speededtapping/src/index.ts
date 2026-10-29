@@ -3,7 +3,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import { version } from "../package.json";
 
 const info = <const>{
-  name: "plugin-fingertapping",
+  name: "plugin-speededtapping",
   version: version,
   parameters: {
     /** Duration of the of the trial (in milliseconds). */
@@ -78,14 +78,14 @@ const info = <const>{
 type Info = typeof info;
 
 /**
- * **plugin-fingertapping**
+ * **plugin-speededtapping**
  *
  * Plugin to administer a timed tapping test on PC or mobile devices.
  *
  * @author Victor Navarro
- * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-fingertapping/README.md}}
+ * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-speededtapping/README.md}}
  */
-class FingertappingPlugin implements JsPsychPlugin<Info> {
+class SpeededTappingPlugin implements JsPsychPlugin<Info> {
   static info = info;
 
   constructor(private jsPsych: JsPsych) {}
@@ -254,4 +254,4 @@ class FingertappingPlugin implements JsPsychPlugin<Info> {
   }
 }
 
-export default FingertappingPlugin;
+export default SpeededTappingPlugin;

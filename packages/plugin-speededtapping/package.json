@@ -1,7 +1,7 @@
 {
-  "name": "@jspsych-contrib/plugin-fingertapping",
+  "name": "@jspsych-contrib/plugin-speededtapping",
   "version": "0.0.1",
-  "description": "Plugin to administer a fingertapping test on PC or mobile devices.",
+  "description": "Plugin to administer a speededtapping test on PC or mobile devices.",
   "type": "module",
   "main": "dist/index.cjs",
   "exports": {
@@ -38,7 +38,7 @@
   "bugs": {
     "url": "https://github.com/victor-navarro/jspsych-contrib/issues"
   },
-  "homepage": "https://github.com/jspsych/jspsych-contrib/packages/plugin-fingertapping/README.md",
+  "homepage": "https://github.com/jspsych/jspsych-contrib/packages/plugin-speededtapping/README.md",
   "dependencies": {
     "jspsych": "^8.0.0",
     "@citation-js/core": "^0.7.14",

@@ -1,6 +1,6 @@
-# plugin-fingertapping
+# plugin-speededtapping
 
-Plugin to administer a fingertapping test on PC or mobile devices.
+Plugin to administer a speededtapping test on PC or mobile devices.
 
 ## Parameters
 
@@ -23,23 +23,23 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 Using the CDN-hosted JavaScript file:
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-fingertapping"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-speededtapping"></script>
 ```
 
 Using the JavaScript file downloaded from a GitHub release dist archive:
 
 ```js
-<script src="jspsych/plugin-fingertapping.js"></script>
+<script src="jspsych/plugin-speededtapping.js"></script>
 ```
 
 Using NPM:
 
 ```
-npm install @jspsych-contrib/plugin-fingertapping
+npm install @jspsych-contrib/plugin-speededtapping
 ```
 
 ```js
-import Fingertapping from "@jspsych-contrib/plugin-fingertapping";
+import SpeededTapping from "@jspsych-contrib/plugin-speededtapping";
 ```
 
 
@@ -49,6 +49,6 @@ import Fingertapping from "@jspsych-contrib/plugin-fingertapping";
 
 ```javascript
 var trial = {
-  type: jsPsychFingertapping
+  type: jsPsychSpeededTapping
 }
 ```
