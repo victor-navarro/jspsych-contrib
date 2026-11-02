@@ -19,7 +19,7 @@ npm install @jspsych-contrib/plugin-timedtapping
 ```
 
 ```js
-import Timedtapping from "@jspsych-contrib/plugin-timedtapping";
+import TimedTapping from "@jspsych-contrib/plugin-timedtapping";
 ```
 
 ## Compatibility

@@ -136,7 +136,7 @@ type Info = typeof info;
  * @author Victor Navarro
  * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-timedtapping/README.md}}
  */
-class TimedtappingPlugin implements JsPsychPlugin<Info> {
+class TimedTappingPlugin implements JsPsychPlugin<Info> {
   static info = info;
 
   constructor(private jsPsych: JsPsych) {}
@@ -262,6 +262,7 @@ class TimedtappingPlugin implements JsPsychPlugin<Info> {
     const cueOnsets: { cued: number[]; uncued: number[] } = { cued: [], uncued: [] };
     const tapOnsets: { cued: number[]; uncued: number[] } = { cued: [], uncued: [] };
     const tapAsyncs: { cued: number[]; uncued: number[] } = { cued: [], uncued: [] };
+    var tapCount = 0; // to keep track of the number of successive, in-window taps
 
     // Define a tap synchronization routine
     const tapWindow: number[] = [];
@@ -270,6 +271,8 @@ class TimedtappingPlugin implements JsPsychPlugin<Info> {
         let running = true;
         let nextCue: number = -1;
         let pastCue: number = -1;
+        let tappedNext: boolean = false;
+        let tappedPast: boolean = false;
 
         const onTap = (e: Event) => {
           if (nextCue < 0 || pastCue < 0) return;
@@ -279,39 +282,60 @@ class TimedtappingPlugin implements JsPsychPlugin<Info> {
           )
             return;
           const t = e.timeStamp;
-          const k1 = t - pastCue; // time since last cue
-          const k2 = nextCue - t; // time until next cue
-          const asyn = Math.round(Math.min(Math.abs(k1), Math.abs(k2))); // asynchrony relative to nearest cue
           const taponset = Math.round(t - startTime);
           if (taponset > 0) {
+            const k1 = Math.abs(t - pastCue); // time since last cue
+            const k2 = Math.abs(nextCue - t); // time until next cue
+            const asyn = Math.round(Math.min(k1, k2)); // asynchrony relative to nearest cue
             tapWindow.push(asyn);
             tapAsyncs.cued.push(asyn);
             tapOnsets.cued.push(taponset);
-          }
-          // shift window if it exceeds the maximum size N
-          if (tapWindow.length > trial.num_taps_for_sync) tapWindow.shift();
-          if (trial.debug) console.log(`Tap asynchrony: ${asyn} (curr windows: ${tapWindow})`);
-          // check if done
-          if (
-            tapWindow.length === trial.num_taps_for_sync &&
-            tapWindow.every((a) => Math.abs(a) <= trial.sync_tolerance)
-          ) {
-            running = false;
-            removeListeners(onTap);
-            resolve();
+            if (asyn <= trial.sync_tolerance) {
+              if (k1 < k2) {
+                tapCount = !tappedPast ? tapCount + 1 : 0; // punishes spamming
+                tappedPast = true;
+              } else {
+                tapCount = !tappedNext ? tapCount + 1 : 0; // punishes spamming
+                tappedNext = true;
+              }
+            }
+            // shift window if it exceeds the maximum size N
+            if (tapWindow.length > trial.num_taps_for_sync) tapWindow.shift();
+            if (trial.debug) console.log(`Tap asynchrony: ${asyn} (curr windows: ${tapWindow})`);
+            // check if done
+            if (
+              tapWindow.length === trial.num_taps_for_sync &&
+              tapWindow.every((a) => Math.abs(a) <= trial.sync_tolerance) &&
+              tapCount >= trial.num_taps_for_sync
+            ) {
+              running = false;
+              removeListeners(onTap);
+              resolve();
+            }
           }
         };
         registerListeners(onTap);
 
         (async () => {
           while (running) {
+            // check if this cue was missed
+            if (!tappedPast && pastCue > 0) {
+              if (trial.debug) console.log(`Missed cue at ${Math.round(pastCue - startTime)} ms`);
+              tapCount = 0;
+            }
             pastCue = performance.now();
             nextCue = pastCue + trial.intercue_interval;
+            tappedPast = tappedNext;
+            tappedNext = false;
             cueOnsets.cued.push(Math.round(pastCue - startTime));
             cueON();
             await waitForDuration(trial.cue_duration);
             cueOFF();
-            await waitForDuration(trial.intercue_interval - trial.cue_duration);
+            await waitForDuration(trial.sync_tolerance);
+            // wait for next cue
+            await waitForDuration(
+              trial.intercue_interval - trial.cue_duration - trial.sync_tolerance
+            );
           }
         })();
       });
@@ -455,4 +479,4 @@ class TimedtappingPlugin implements JsPsychPlugin<Info> {
   }
 }
 
-export default TimedtappingPlugin;
+export default TimedTappingPlugin;

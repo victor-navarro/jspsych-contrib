@@ -39,7 +39,7 @@ npm install @jspsych-contrib/plugin-timedtapping
 ```
 
 ```js
-import Timedtapping from "@jspsych-contrib/plugin-timedtapping";
+import TimedTapping from "@jspsych-contrib/plugin-timedtapping";
 ```
 
 
@@ -49,6 +49,6 @@ import Timedtapping from "@jspsych-contrib/plugin-timedtapping";
 
 ```javascript
 var trial = {
-  type: jsPsychTimedtapping
+  type: jsPsychTimedTapping
 }
 ```

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>jsPsychTimedtapping Example</title>
+  <title>jsPsychTimedTapping Example</title>
   <script src="https://unpkg.com/jspsych"></script>
   <!-- Once this plugin package is published, you can load it from a CDN instead:
 <script src="https://unpkg.com/@jspsych-contrib/plugin-timedtapping"></script> -->
@@ -42,7 +42,7 @@
 
 
   const space_fixed = {
-    type: jsPsychTimedtapping,
+    type: jsPsychTimedTapping,
     wait_for_sync: false,
     intercue_interval: 500,
     cued_duration: 4000,
@@ -53,7 +53,7 @@
   }
 
   const button_sync = {
-    type: jsPsychTimedtapping,
+    type: jsPsychTimedTapping,
     wait_for_sync: true,
     intercue_interval: 500,
     uncued_duration: 4000,
@@ -63,10 +63,11 @@
     show_progress: false,
     response_mode: "button",
     cue_modality: "visual",
+    debug: true
   }
 
   const space_progress = {
-    type: jsPsychTimedtapping,
+    type: jsPsychTimedTapping,
     wait_for_sync: false,
     intercue_interval: 500,
     cued_duration: 4000,
@@ -77,7 +78,7 @@
   }
 
   const button_audio = {
-    type: jsPsychTimedtapping,
+    type: jsPsychTimedTapping,
     wait_for_sync: false,
     intercue_interval: 500,
     cued_duration: 4000,
@@ -99,8 +100,8 @@
     choices: [" "]
   }
 
-
-  jsPsych.run([intro, space_fixed, button_sync, space_progress, button_audio, done])
+  jsPsych.run([button_sync])
+  // jsPsych.run([intro, space_fixed, button_sync, space_progress, button_audio, done])
 </script>
 
 </html>
