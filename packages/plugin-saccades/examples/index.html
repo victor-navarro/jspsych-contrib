@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>jsPsychSaccades Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <!-- Local testing because saccadejs is a little broken-->
+  <script src="../dist/saccadejs/saccadejs-core.js"></script>
+  <script src="../dist/saccadejs/saccadejs-extension.js"></script>
+  <script src="../dist/saccadejs/plugin-saccadejs-preview.js"></script>
+  <script src="../dist/saccadejs/plugin-saccadejs-time-sync.js"></script>
+  <script src="../dist/saccadejs/plugin-saccadejs-calibrate.js"></script>
+  <script src="../dist/saccadejs/plugin-saccadejs-validate.js"></script>
+  <!-- Once this plugin package is published, you can load it from a CDN instead:
+<script src="https://unpkg.com/@jspsych-contrib/plugin-saccades"></script> -->
+  <script src="../dist/index.browser.min.js"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    extensions: [{ type: jsPsychExtensionSaccade }],
+    on_finish: function () {
+      jsPsych.data.displayData();
+    }
+  });
+
+  const sacc_preview = {
+    type: jsPsychSaccadePreview,
+  }
+
+  const calibration_inst = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: "We will now calibrate the eye tracker. Please keep your head still and look at the circles as they appear. Press any key to begin."
+  };
+
+  const sacc_calibrate = {
+    type: jsPsychSaccadeCalibrate,
+    calibration_points: [
+      [5, 5],
+      [95, 5],
+      [50, 50],
+      [5, 95],
+      [95, 95]]
+  }
+
+  const saccade_inst = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: "Look at the fixation point, and then at the target. Press any key to continue."
+  }
+  const saccade = {
+    type: jsPsychSaccades,
+    cue_side: jsPsych.timelineVariable('cue_side'),
+    correct_side: jsPsych.timelineVariable('correct_side'),
+    debug: true,
+    extensions: [
+      { type: jsPsychExtensionSaccade, params: { targets: ["#left-cue-div", "#right-cue-div"] } },
+    ],
+  };
+  const antisaccade_inst = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: "Look at the fixation point, and then at the side opposite to the target. Press any key to continue."
+  };
+  const antisaccade = {
+    type: jsPsychSaccades,
+    cue_side: jsPsych.timelineVariable('cue_side'),
+    correct_side: jsPsych.timelineVariable('correct_side'),
+    debug: true,
+    extensions: [
+      { type: jsPsychExtensionSaccade, params: { targets: ["#left-cue-div", "#right-cue-div"] } },
+    ],
+  };
+
+  const saccade_variables = [{ cue_side: "left", correct_side: "left" }, { cue_side: "right", correct_side: "right" }];
+  const saccade_block = {
+    timeline: [saccade],
+    timeline_variables: saccade_variables,
+    randomize_order: true
+  }
+  const antisaccade_variables = [{ cue_side: "left", correct_side: "right" }, { cue_side: "right", correct_side: "left" }];
+
+  const antisaccade_block = {
+    timeline: [antisaccade],
+    timeline_variables: antisaccade_variables,
+    randomize_order: true
+  }
+
+  jsPsych.run([sacc_preview, calibration_inst, sacc_calibrate, saccade_inst, saccade_block, antisaccade_inst, antisaccade_block])
+</script>
+
+</html>
