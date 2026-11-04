@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>jsPsychSaccades Example</title>
+  <title>jsPsychSaccadesSelfpaced Example</title>
   <script src="https://unpkg.com/jspsych"></script>
   <!-- Local testing because saccadejs is a little broken-->
   <script src="../dist/saccadejs/saccadejs-core.js"></script>
@@ -12,7 +12,7 @@
   <script src="../dist/saccadejs/plugin-saccadejs-calibrate.js"></script>
   <script src="../dist/saccadejs/plugin-saccadejs-validate.js"></script>
   <!-- Once this plugin package is published, you can load it from a CDN instead:
-<script src="https://unpkg.com/@jspsych-contrib/plugin-saccades"></script> -->
+<script src="https://unpkg.com/@jspsych-contrib/plugin-saccades-selfpaced"></script> -->
   <script src="../dist/index.browser.min.js"></script>
   <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
   <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
@@ -51,7 +51,7 @@
     stimulus: "Look at the fixation point, and then at the target. Press any key to continue."
   }
   const saccade = {
-    type: jsPsychSaccades,
+    type: jsPsychSaccadesSelfpaced,
     cue_side: jsPsych.timelineVariable('cue_side'),
     correct_side: jsPsych.timelineVariable('correct_side'),
     debug: true,
@@ -64,7 +64,7 @@
     stimulus: "Look at the fixation point, and then at the side opposite to the target. Press any key to continue."
   };
   const antisaccade = {
-    type: jsPsychSaccades,
+    type: jsPsychSaccadesSelfpaced,
     cue_side: jsPsych.timelineVariable('cue_side'),
     correct_side: jsPsych.timelineVariable('correct_side'),
     debug: true,
