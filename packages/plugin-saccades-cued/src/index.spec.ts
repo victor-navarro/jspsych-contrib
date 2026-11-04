@@ -1,6 +1,6 @@
 import { startTimeline } from "@jspsych/test-utils";
 
-import jsPsychSaccades from ".";
+import jsPsychSaccadesCued from ".";
 
 jest.useFakeTimers();
 
@@ -8,7 +8,7 @@ describe("my plugin", () => {
   it("should load", async () => {
     const { expectFinished, getHTML, getData, displayElement, jsPsych } = await startTimeline([
       {
-        type: jsPsychSaccades,
+        type: jsPsychSaccadesCued,
         parameter_name: 1,
         parameter_name2: "img.png",
       },

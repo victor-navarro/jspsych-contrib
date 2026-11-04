@@ -1,6 +1,6 @@
-# plugin-saccades
+# plugin-saccades-cued
 
-A plugin to implement cued saccades or antisaccades
+Plugin for cued saccades/anti-saccades.
 
 ## Parameters
 
@@ -23,23 +23,23 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 Using the CDN-hosted JavaScript file:
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-saccades"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-saccades-cued"></script>
 ```
 
 Using the JavaScript file downloaded from a GitHub release dist archive:
 
 ```js
-<script src="jspsych/plugin-saccades.js"></script>
+<script src="jspsych/plugin-saccades-cued.js"></script>
 ```
 
 Using NPM:
 
 ```
-npm install @jspsych-contrib/plugin-saccades
+npm install @jspsych-contrib/plugin-saccades-cued
 ```
 
 ```js
-import Saccades from "@jspsych-contrib/plugin-saccades";
+import SaccadesCued from "@jspsych-contrib/plugin-saccades-cued";
 ```
 
 
@@ -49,6 +49,6 @@ import Saccades from "@jspsych-contrib/plugin-saccades";
 
 ```javascript
 var trial = {
-  type: jsPsychSaccades
+  type: jsPsychSaccadesCued
 }
 ```

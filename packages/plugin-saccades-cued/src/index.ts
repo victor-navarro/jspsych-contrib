@@ -3,7 +3,7 @@ import { JsPsych, JsPsychPlugin, ParameterType, TrialType } from "jspsych";
 import { version } from "../package.json";
 
 const info = <const>{
-  name: "plugin-saccades",
+  name: "plugin-saccades-cued",
   version: version,
   parameters: {
     /** The side where the cue will appear (left or right) */
@@ -85,14 +85,14 @@ const info = <const>{
 type Info = typeof info;
 
 /**
- * **plugin-saccades**
+ * **plugin-saccades-cued**
  *
  * A plugin to implement cued saccades or antisaccades
  *
  * @author Victor Navarro
- * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-saccades/README.md}}
+ * @see {@link https://github.com/jspsych/jspsych-contrib/packages/plugin-saccades-cued/README.md}}
  */
-class SaccadesPlugin implements JsPsychPlugin<Info> {
+class SaccadesCuedPlugin implements JsPsychPlugin<Info> {
   static info = info;
 
   constructor(private jsPsych: JsPsych) {}
@@ -235,4 +235,4 @@ class SaccadesPlugin implements JsPsychPlugin<Info> {
   }
 }
 
-export default SaccadesPlugin;
+export default SaccadesCuedPlugin;
