@@ -1,6 +1,6 @@
-# plugin-fingertapping
+# plugin-timedtapping
 
-Plugin to administer a fingertapping test on PC or mobile devices.
+Plugin to administer a timed tapping test on PC or mobile devices.
 
 ## Parameters
 
@@ -23,23 +23,23 @@ In addition to the [default data collected by all plugins](https://www.jspsych.o
 Using the CDN-hosted JavaScript file:
 
 ```js
-<script src="https://unpkg.com/@jspsych-contrib/plugin-fingertapping"></script>
+<script src="https://unpkg.com/@jspsych-contrib/plugin-timedtapping"></script>
 ```
 
 Using the JavaScript file downloaded from a GitHub release dist archive:
 
 ```js
-<script src="jspsych/plugin-fingertapping.js"></script>
+<script src="jspsych/plugin-timedtapping.js"></script>
 ```
 
 Using NPM:
 
 ```
-npm install @jspsych-contrib/plugin-fingertapping
+npm install @jspsych-contrib/plugin-timedtapping
 ```
 
 ```js
-import Fingertapping from "@jspsych-contrib/plugin-fingertapping";
+import TimedTapping from "@jspsych-contrib/plugin-timedtapping";
 ```
 
 
@@ -49,6 +49,6 @@ import Fingertapping from "@jspsych-contrib/plugin-fingertapping";
 
 ```javascript
 var trial = {
-  type: jsPsychFingertapping
+  type: jsPsychTimedTapping
 }
 ```
