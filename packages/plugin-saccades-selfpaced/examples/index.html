@@ -48,46 +48,18 @@
 
   const saccade_inst = {
     type: jsPsychHtmlKeyboardResponse,
-    stimulus: "Look at the fixation point, and then at the target. Press any key to continue."
+    stimulus: "Alternate looking at the targets as fast as possible, for as long as you can. Press any key to continue."
   }
   const saccade = {
     type: jsPsychSaccadesSelfpaced,
-    cue_side: jsPsych.timelineVariable('cue_side'),
-    correct_side: jsPsych.timelineVariable('correct_side'),
+
     debug: true,
     extensions: [
       { type: jsPsychExtensionSaccade, params: { targets: ["#left-cue-div", "#right-cue-div"] } },
     ],
   };
-  const antisaccade_inst = {
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: "Look at the fixation point, and then at the side opposite to the target. Press any key to continue."
-  };
-  const antisaccade = {
-    type: jsPsychSaccadesSelfpaced,
-    cue_side: jsPsych.timelineVariable('cue_side'),
-    correct_side: jsPsych.timelineVariable('correct_side'),
-    debug: true,
-    extensions: [
-      { type: jsPsychExtensionSaccade, params: { targets: ["#left-cue-div", "#right-cue-div"] } },
-    ],
-  };
-
-  const saccade_variables = [{ cue_side: "left", correct_side: "left" }, { cue_side: "right", correct_side: "right" }];
-  const saccade_block = {
-    timeline: [saccade],
-    timeline_variables: saccade_variables,
-    randomize_order: true
-  }
-  const antisaccade_variables = [{ cue_side: "left", correct_side: "right" }, { cue_side: "right", correct_side: "left" }];
-
-  const antisaccade_block = {
-    timeline: [antisaccade],
-    timeline_variables: antisaccade_variables,
-    randomize_order: true
-  }
-
-  jsPsych.run([sacc_preview, calibration_inst, sacc_calibrate, saccade_inst, saccade_block, antisaccade_inst, antisaccade_block])
+  // jsPsych.run([saccade])
+  jsPsych.run([sacc_preview, sacc_calibrate, saccade])
 </script>
 
 </html>
