@@ -220,7 +220,7 @@ type Info = typeof info;
 class StopSignalMmPlugin implements JsPsychPlugin<Info> {
   static info = info;
 
-  constructor(private jsPsych: JsPsych) {}
+  constructor(private jsPsych: JsPsych) { }
 
   async trial(display_element: HTMLElement, trial: TrialType<Info>) {
     // Parameter validation
