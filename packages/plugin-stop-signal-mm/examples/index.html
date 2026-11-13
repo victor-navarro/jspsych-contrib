@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>jsPsychStopSignalMm Example</title>
+  <script src="https://unpkg.com/jspsych"></script>
+  <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2"></script>
+  <!-- Once this plugin package is published, you can load it from a CDN instead:
+<script src="https://unpkg.com/@jspsych-contrib/plugin-stop-signal-mm"></script> -->
+  <script src="../dist/index.browser.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/jspsych/css/jspsych.css" />
+</head>
+
+<body></body>
+<script>
+  const jsPsych = initJsPsych({
+    on_finish: function () {
+      jsPsych.data.displayData();
+    }
+  });
+
+  const trial = {
+    type: jsPsychStopSignalMm,
+    go_modality: 'visual',
+    stop_modality: 'visual',
+    go_stim: jsPsych.timelineVariable('go_stim'),
+    stop_stim: jsPsych.timelineVariable('stop_stim'),
+    stop_signal_delay: jsPsych.timelineVariable('stop_signal_delay'),
+    choices: ['Left', 'Right'],
+    correct_choice: jsPsych.timelineVariable('correct_choice'),
+    show_buttons: true,
+    button_labels: ["Left", "Right"],
+    trial_duration: 1000,
+    debug: true
+  };
+  const trial_block = {
+    timeline: [trial],
+    timeline_variables: [
+      { go_stim: "img/go-1.png", stop_stim: "img/stop-1.png", stop_signal_delay: 150, correct_choice: "Left" },
+      { go_stim: "img/go-1.png", stop_stim: "img/stop-1.png", stop_signal_delay: -1, correct_choice: "Left" },
+      { go_stim: "img/go-2.png", stop_stim: "img/stop-2.png", stop_signal_delay: 150, correct_choice: "Right" },
+      { go_stim: "img/go-2.png", stop_stim: "img/stop-2.png", stop_signal_delay: -1, correct_choice: "Right" }
+    ]
+  }
+
+  jsPsych.run([trial_block])
+</script>
+
+</html>
