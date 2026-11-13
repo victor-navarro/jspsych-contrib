@@ -19,31 +19,135 @@
     }
   });
 
-  const trial = {
+  const vis_trial = {
     type: jsPsychStopSignalMm,
     go_modality: 'visual',
     stop_modality: 'visual',
     go_stim: jsPsych.timelineVariable('go_stim'),
     stop_stim: jsPsych.timelineVariable('stop_stim'),
     stop_signal_delay: jsPsych.timelineVariable('stop_signal_delay'),
-    choices: ['Left', 'Right'],
+    choices: ['ArrowLeft', 'ArrowRight'],
     correct_choice: jsPsych.timelineVariable('correct_choice'),
     show_buttons: true,
     button_labels: ["Left", "Right"],
     trial_duration: 1000,
-    debug: true
   };
-  const trial_block = {
-    timeline: [trial],
+  const vis_trial_block = {
+    timeline: [vis_trial],
     timeline_variables: [
-      { go_stim: "img/go-1.png", stop_stim: "img/stop-1.png", stop_signal_delay: 150, correct_choice: "Left" },
-      { go_stim: "img/go-1.png", stop_stim: "img/stop-1.png", stop_signal_delay: -1, correct_choice: "Left" },
-      { go_stim: "img/go-2.png", stop_stim: "img/stop-2.png", stop_signal_delay: 150, correct_choice: "Right" },
-      { go_stim: "img/go-2.png", stop_stim: "img/stop-2.png", stop_signal_delay: -1, correct_choice: "Right" }
-    ]
+      { go_stim: "img/go-1.png", stop_stim: "img/stop-1.png", stop_signal_delay: 200, correct_choice: "ArrowLeft" },
+      { go_stim: "img/go-1.png", stop_stim: "img/stop-1.png", stop_signal_delay: -1, correct_choice: "ArrowLeft" },
+      { go_stim: "img/go-2.png", stop_stim: "img/stop-2.png", stop_signal_delay: 150, correct_choice: "ArrowRight" },
+      { go_stim: "img/go-2.png", stop_stim: "img/stop-2.png", stop_signal_delay: -1, correct_choice: "ArrowRight" }
+    ],
+    randomize_order: true
+  }
+  const aud_trial = {
+    type: jsPsychStopSignalMm,
+    go_modality: 'auditory',
+    stop_modality: 'auditory',
+    go_stim: jsPsych.timelineVariable('go_stim'),
+    stop_stim: jsPsych.timelineVariable('stop_stim'),
+    stop_signal_delay: jsPsych.timelineVariable('stop_signal_delay'),
+    choices: ['ArrowLeft', 'ArrowRight'],
+    correct_choice: jsPsych.timelineVariable('correct_choice'),
+    trial_duration: 1000,
+  };
+
+  const aud_trial_block = {
+    timeline: [aud_trial],
+    timeline_variables: [
+      { go_stim: 1000, stop_stim: 250, stop_signal_delay: 200, correct_choice: "ArrowLeft" },
+      { go_stim: 1000, stop_stim: 250, stop_signal_delay: -1, correct_choice: "ArrowLeft" },
+      { go_stim: 1250, stop_stim: 250, stop_signal_delay: 200, correct_choice: "ArrowRight" },
+      { go_stim: 1250, stop_stim: 250, stop_signal_delay: -1, correct_choice: "ArrowRight" }
+    ],
+    randomize_order: true
   }
 
-  jsPsych.run([trial_block])
+  const vis_aud_trial = {
+    type: jsPsychStopSignalMm,
+    go_modality: 'visual',
+    stop_modality: 'auditory',
+    go_stim: jsPsych.timelineVariable('go_stim'),
+    stop_stim: jsPsych.timelineVariable('stop_stim'),
+    stop_signal_delay: jsPsych.timelineVariable('stop_signal_delay'),
+    choices: ['ArrowLeft', 'ArrowRight'],
+    correct_choice: jsPsych.timelineVariable('correct_choice'),
+    show_buttons: true,
+    button_labels: ["Left", "Right"],
+    trial_duration: 1000,
+  }
+
+  const vis_aud_trial_block = {
+    timeline: [vis_aud_trial],
+    timeline_variables: [
+      { go_stim: "img/go-1.png", stop_stim: 250, stop_signal_delay: 200, correct_choice: "ArrowLeft" },
+      { go_stim: "img/go-1.png", stop_stim: 250, stop_signal_delay: -1, correct_choice: "ArrowLeft" },
+      { go_stim: "img/go-2.png", stop_stim: 250, stop_signal_delay: 200, correct_choice: "ArrowRight" },
+      { go_stim: "img/go-2.png", stop_stim: 250, stop_signal_delay: -1, correct_choice: "ArrowRight" }
+    ],
+    randomize_order: true
+  }
+
+  const aud_vis_trial = {
+    type: jsPsychStopSignalMm,
+    go_modality: 'auditory',
+    stop_modality: 'visual',
+    go_stim: jsPsych.timelineVariable('go_stim'),
+    stop_stim: jsPsych.timelineVariable('stop_stim'),
+    stop_signal_delay: jsPsych.timelineVariable('stop_signal_delay'),
+    choices: ['ArrowLeft', 'ArrowRight'],
+    correct_choice: jsPsych.timelineVariable('correct_choice'),
+    trial_duration: 1000,
+    debug: true
+  }
+
+  const aud_vis_trial_block = {
+    timeline: [aud_vis_trial],
+    timeline_variables: [
+      { go_stim: 1000, stop_stim: "img/gen-stop.png", stop_signal_delay: 200, correct_choice: "ArrowLeft" },
+      { go_stim: 1000, stop_stim: "img/gen-stop.png", stop_signal_delay: -1, correct_choice: "ArrowLeft" },
+      { go_stim: 1250, stop_stim: "img/gen-stop.png", stop_signal_delay: 200, correct_choice: "ArrowRight" },
+      { go_stim: 1250, stop_stim: "img/gen-stop.png", stop_signal_delay: -1, correct_choice: "ArrowRight" }
+    ],
+    randomize_order: true
+  }
+
+  const vis_trial_inst = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: 'Press the left button on the screen if the arrow is pointing left, and the right button if the arrow is pointing right. Do not respond if the arrow turns red.<br><br>Press any key to continue.',
+  }
+
+  const aud_trial_inst = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: 'Press the left arrow on your keyboard if the tone is low. Press the right arrow on your keyboard if the tone is high. Do not respond if you hear a second tone.<br><br>Press any key to continue.',
+  }
+
+  const vis_aud_trial_inst = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: 'Press the left button on the screen if the arrow is pointing left, and the right button if the arrow is pointing right. Do not respond if you hear a tone.<br><br>Press any key to continue.',
+  }
+
+  const aud_vis_trial_inst = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: 'Press the left arrow on your keyboard if the tone is low. Press the right arrow on your keyboard if the tone is high. Do not respond if you see a red X.<br><br>Press any key to continue.',
+  }
+  const calib_inst = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: 'Adjust your volume so that you can hear the tone clearly. Press any key to start the calibration.',
+  }
+
+  const audio_calib = {
+    type: jsPsychStopSignalMm,
+    audio_calibration: true,
+    go_modality: 'auditory',
+    go_stim: 1000,
+    choices: [" "],
+    calibration_prompt: 'Adjust your volume so that you can hear the tone clearly.<br><br>Press SPACEBAR to continue.',
+  }
+  jsPsych.run([calib_inst, audio_calib, vis_trial_inst, vis_trial_block, aud_trial_inst, aud_trial_block, vis_aud_trial_inst, vis_aud_trial_block, aud_vis_trial_inst, aud_vis_trial_block])
+
 </script>
 
 </html>

@@ -25,14 +25,14 @@ const info = <const>{
     */
     go_stim: {
       type: ParameterType.COMPLEX,
-      default: undefined,
+      default: "",
     },
     /**
     Stop stimulus. Image path for visual stimulus (str) or frequency (int) for auditory stimulus.
     */
     stop_stim: {
       type: ParameterType.COMPLEX,
-      default: undefined,
+      default: "",
     },
     /**
     Stop signal delay in milliseconds. -1 indicates no stop signal will be presented.
@@ -53,7 +53,7 @@ const info = <const>{
     */
     choices: {
       type: ParameterType.STRING,
-      default: undefined,
+      default: ["ArrowLeft", "ArrowRight"],
       array: true,
     },
     /**
@@ -61,7 +61,7 @@ const info = <const>{
     */
     correct_choice: {
       type: ParameterType.STRING,
-      default: undefined,
+      default: "",
     },
     /**
     Whether to show response buttons.
@@ -75,7 +75,7 @@ const info = <const>{
     */
     button_labels: {
       type: ParameterType.STRING,
-      default: [],
+      default: ["Left", "Right"],
       array: true,
     },
     /**
@@ -113,10 +113,31 @@ const info = <const>{
     },
     /**
     Post trial delay in milliseconds.
-*/
+    */
     post_trial_delay: {
       type: ParameterType.INT,
       default: 1000,
+    },
+    /**
+    Type of the stop audio signal. E.g., "sine", "square", "sawtooth", "triangle".
+    */
+    stop_audio_type: {
+      type: ParameterType.STRING,
+      default: "triangle",
+    },
+    /**
+    Whether the trial was an audio calibration trial.
+    */
+    audio_calibration: {
+      type: ParameterType.BOOL,
+      default: false,
+    },
+    /**
+     Calibration prompt.
+     */
+    calibration_prompt: {
+      type: ParameterType.STRING,
+      default: "Adjust your volume so that you can hear the tone clearly.",
     },
     /**
     Debug mode. If true, additional information will be logged to the console.
@@ -127,26 +148,59 @@ const info = <const>{
     },
   },
   data: {
-    response: {
-      type: ParameterType.STRING,
+    /**
+    Whether the participant's response was correct. 1 if correct, 0 if incorrect. No response on stop trials is correct. Correct response on go trials depends on correct_choice parameter.
+    */
+    correct: {
+      type: ParameterType.INT,
     },
+    /**
+     Reaction time for the trial in milliseconds. -1 if no response was made.
+     */
     rt: {
       type: ParameterType.INT,
     },
+    /**
+    Participant's response for the trial. Empty if no response was made.
+    */
+    response: {
+      type: ParameterType.STRING,
+    },
+    /**
+    Stop signal delay for the trial in milliseconds.
+    */
     stop_signal_delay: {
       type: ParameterType.INT,
     },
+    /**
+    Modality of the go stimulus for the trial. Either 'visual' or 'auditory'.
+    */
     go_modality: {
       type: ParameterType.STRING,
     },
+    /**
+    Modality of the stop stimulus for the trial. Either 'visual' or 'auditory'.
+    */
     stop_modality: {
       type: ParameterType.STRING,
     },
+    /**
+    Go stimulus for the trial. String if visual modality, number if auditory modality.
+    */
     go_stim: {
       type: ParameterType.COMPLEX,
     },
+    /**
+    Stop stimulus for the trial. String if visual modality, number if auditory modality.
+    */
     stop_stim: {
       type: ParameterType.COMPLEX,
+    },
+    /**
+     Whether the trial was an audio calibration trial.
+    */
+    audio_calibration: {
+      type: ParameterType.BOOL,
     },
   },
   // When you run build on your plugin, citations will be generated here based on the information in the CITATION.cff file.
@@ -179,23 +233,39 @@ class StopSignalMmPlugin implements JsPsychPlugin<Info> {
     if (!["visual", "auditory"].includes(trial.stop_modality)) {
       throw new Error("Stop modality must be either 'visual' or 'auditory'.");
     }
-    if (trial.go_modality === "visual" && typeof trial.go_stim !== "string") {
-      throw new Error("Go stimulus must be a string for visual modality.");
-    }
-    if (trial.go_modality === "auditory" && typeof trial.go_stim !== "number") {
-      throw new Error("Go stimulus must be a number for auditory modality.");
-    }
-    if (trial.stop_modality === "visual" && typeof trial.stop_stim !== "string") {
-      throw new Error("Stop stimulus must be a string for visual modality.");
-    }
-    if (trial.stop_modality === "auditory" && typeof trial.stop_stim !== "number") {
-      throw new Error("Stop stimulus must be a number for auditory modality.");
+    if (trial.audio_calibration) {
+      if (![trial.go_modality, trial.stop_modality].includes("auditory")) {
+        throw new Error("Audio calibration trials must involve at least one auditory stimulus.");
+      }
+      if (trial.go_modality === "auditory" && typeof trial.go_stim !== "number") {
+        throw new Error(
+          "Go stimulus must be a number for auditory modality in audio calibration trials."
+        );
+      }
+      if (trial.stop_modality === "auditory" && typeof trial.stop_stim !== "number") {
+        throw new Error(
+          "Stop stimulus must be a number for auditory modality in audio calibration trials."
+        );
+      }
+    } else {
+      if (trial.go_modality === "visual" && typeof trial.go_stim !== "string") {
+        throw new Error("Go stimulus must be a string for visual modality.");
+      }
+      if (trial.go_modality === "auditory" && typeof trial.go_stim !== "number") {
+        throw new Error("Go stimulus must be a number for auditory modality.");
+      }
+      if (trial.stop_modality === "visual" && typeof trial.stop_stim !== "string") {
+        throw new Error("Stop stimulus must be a string for visual modality.");
+      }
+      if (trial.stop_modality === "auditory" && typeof trial.stop_stim !== "number") {
+        throw new Error("Stop stimulus must be a number for auditory modality.");
+      }
     }
 
     // Create cue html
     var html = "";
     html += `<div id="cue-container" style="display: grid; place-items: center;">`;
-    const vis_cue = `"grid-area: 1 / 1; width: ${trial.visual_width}; height: ${trial.visual_height};"`;
+    const vis_cue = `"grid-area: 1 / 1; width: ${trial.visual_width}; height: ${trial.visual_height}; visibility: hidden;"`;
     if (trial.go_modality === "visual") {
       html += `<img id="go-container" src="${trial.go_stim}" style=${vis_cue}></img>`;
     }
@@ -223,20 +293,29 @@ class StopSignalMmPlugin implements JsPsychPlugin<Info> {
       trial.go_modality === "auditory" || trial.stop_modality === "auditory"
         ? new AudioContext()
         : null;
+
     // Plays an audio and returns the oscillator, so it can be stopped later if needed.
-    const playAudio = (freq: number) => {
+    const getSound = (freq: number, type: string = "sine") => {
       const oscillator = audioContext!.createOscillator();
-      oscillator.type = "sine";
+      oscillator.type = type as OscillatorType;
       oscillator.frequency.value = freq;
-      oscillator.connect(audioContext!.destination);
-      oscillator.start();
+      const gain = audioContext!.createGain();
+      gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+      oscillator.connect(gain);
+      gain.connect(audioContext!.destination);
+      oscillator.onended = () => {
+        gain.disconnect();
+        oscillator.disconnect();
+      };
       return oscillator;
     };
 
-    const go_sound =
-      trial.go_modality === "auditory" ? playAudio(trial.go_stim as number) : undefined;
-    const stop_sound =
-      trial.stop_modality === "auditory" ? playAudio(trial.stop_stim as number) : undefined;
+    var go_sound: OscillatorNode | undefined =
+      trial.go_modality === "auditory" ? getSound(trial.go_stim as number) : undefined;
+    var stop_sound: OscillatorNode | undefined =
+      trial.stop_modality === "auditory" && trial.stop_signal_delay > 0
+        ? getSound(trial.stop_stim as number, trial.stop_audio_type)
+        : undefined;
 
     // RAF-based timing helper
     const waitForDuration = (duration: number): Promise<void> => {
@@ -268,11 +347,12 @@ class StopSignalMmPlugin implements JsPsychPlugin<Info> {
         }
       } else if (trial.go_modality === "auditory") {
         // Play auditory go stimulus
-        playAudio(trial.go_stim as number);
+        go_sound?.start();
       }
     };
 
     const goOff = () => {
+      if (trial.debug) console.log("Go stimulus removed");
       if (trial.go_modality === "visual") {
         const cueContainer = document.getElementById("go-container");
         if (cueContainer) {
@@ -280,31 +360,28 @@ class StopSignalMmPlugin implements JsPsychPlugin<Info> {
         }
       } else {
         if (go_sound != undefined) {
-          go_sound.stop();
+          go_sound?.stop();
         }
       }
     };
 
     const stopOn = () => {
       if (trial.debug) console.log("Stop stimulus presented");
+      if (trial.stop_modality === trial.go_modality) {
+        goOff();
+      }
       if (trial.stop_modality === "visual") {
-        if (trial.go_modality === "visual") {
-          const cueContainer = document.getElementById("go-container");
-          if (cueContainer) {
-            cueContainer.style.visibility = "hidden";
-          }
-        }
         const stopContainer = document.getElementById("stop-container");
         if (stopContainer) {
           stopContainer.style.visibility = "visible";
         }
       } else if (trial.stop_modality === "auditory") {
-        // Play auditory stop stimulus
-        playAudio(trial.stop_stim as number);
+        stop_sound?.start();
       }
     };
 
     const stopOff = () => {
+      if (trial.debug) console.log("Stop stimulus removed");
       if (trial.stop_modality === "visual") {
         const stopContainer = document.getElementById("stop-container");
         if (stopContainer) {
@@ -312,7 +389,7 @@ class StopSignalMmPlugin implements JsPsychPlugin<Info> {
         }
       } else {
         if (stop_sound != undefined) {
-          stop_sound.stop();
+          stop_sound?.stop();
         }
       }
     };
@@ -337,31 +414,42 @@ class StopSignalMmPlugin implements JsPsychPlugin<Info> {
       }
     };
 
+    const validResponse = (key: string) => {
+      for (let i = 0; i < trial.choices.length; i++) {
+        if (this.jsPsych.pluginAPI.compareKeys(key, trial.choices[i])) {
+          return true;
+        }
+      }
+      return false;
+    };
+
     var response = "";
     var stop_response = false;
     var rt = -1;
     const handleResponse = (e: Event) => {
-      if (e instanceof KeyboardEvent) {
+      if (e instanceof KeyboardEvent && validResponse(e.key) && !e.repeat) {
         response = e.key;
         rt = performance.now() - start_time;
+        stop_response = stop_shown;
+        removeListeners(handleResponse);
       } else if (e instanceof PointerEvent) {
         const target = e.target as HTMLElement;
         if (target && target.id.startsWith("button-")) {
           response = target.id.replace("button-", "");
           rt = performance.now() - start_time;
+          stop_response = stop_shown;
+          removeListeners(handleResponse);
         }
       }
-      stop_response = stop_shown;
-      removeListeners(handleResponse);
     };
 
     var waiting = true;
     var stop_shown = false;
     const waitForResponse = async (
-      start_time: number,
       trial_duration: number,
       stop_signal_delay: number
     ): Promise<void> => {
+      await new Promise<void>((resolve) => setTimeout(resolve, 0));
       registerListeners(handleResponse);
       try {
         // Start go signal
@@ -386,15 +474,45 @@ class StopSignalMmPlugin implements JsPsychPlugin<Info> {
         removeListeners(handleResponse);
         goOff();
         stopOff();
+        if (audioContext) {
+          await audioContext.close();
+        }
       }
     };
+
+    const waitForAudioCalibration = async (sound: OscillatorNode): Promise<void> => {
+      await new Promise<void>((resolve) => setTimeout(resolve, 0));
+      registerListeners(handleResponse);
+      const calibrationContainer = document.getElementById("feedback-container");
+      if (calibrationContainer) {
+        calibrationContainer.innerHTML = trial.calibration_prompt || "";
+        calibrationContainer.style.visibility = "visible";
+      }
+      try {
+        sound.start();
+        while (response == "") {
+          await new Promise(requestAnimationFrame);
+        }
+      } finally {
+        // removes listeners in case no response
+        removeListeners(handleResponse);
+        if (calibrationContainer) {
+          calibrationContainer.style.visibility = "hidden";
+        }
+        sound?.stop();
+        if (audioContext) {
+          await audioContext.close();
+        }
+      }
+    };
+
     const showFeedback = () => {
       const feedbackContainer = document.getElementById("feedback-container");
       if (feedbackContainer) {
         let msg = "";
         if (response != "") {
           if (trial.stop_signal_delay < 0) {
-            if (response === trial.correct_choice) {
+            if (this.jsPsych.pluginAPI.compareKeys(response, trial.correct_choice)) {
               msg = trial.feedback_strings.correct || "Correct";
             } else {
               msg = trial.feedback_strings.incorrect || "Incorrect";
@@ -421,20 +539,38 @@ class StopSignalMmPlugin implements JsPsychPlugin<Info> {
       }
     };
 
+    // debounce keyboard
+    this.jsPsych.pluginAPI.cancelAllKeyboardResponses();
     const start_time = performance.now();
-    await waitForResponse(start_time, trial.trial_duration, trial.stop_signal_delay);
+    if (trial.audio_calibration) {
+      await waitForAudioCalibration(trial.go_modality === "auditory" ? go_sound : stop_sound);
+    } else {
+      await waitForResponse(trial.trial_duration, trial.stop_signal_delay);
+    }
     // Show feedback
-    if (trial.feedback_duration > 0) {
+    if (trial.feedback_duration > 0 && !trial.audio_calibration) {
       showFeedback();
       await waitForDuration(trial.feedback_duration);
       hideFeedback();
     }
     await waitForDuration(trial.post_trial_delay);
 
+    // rate response
+    var correct = 0;
+    if (response != "" && trial.stop_signal_delay > 0) {
+      correct = 1;
+    }
+    if (response != "" && trial.stop_signal_delay < 0) {
+      if (this.jsPsych.pluginAPI.compareKeys(response, trial.correct_choice)) {
+        correct = 1;
+      }
+    }
+
     // data saving
     var trial_data = {
-      response: response,
+      correct: correct,
       rt: rt,
+      response: response,
       stop_signal_delay: trial.stop_signal_delay,
       go_modality: trial.go_modality,
       stop_modality: trial.stop_modality,
