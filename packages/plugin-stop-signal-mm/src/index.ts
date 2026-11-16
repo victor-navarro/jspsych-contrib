@@ -220,7 +220,7 @@ type Info = typeof info;
 class StopSignalMmPlugin implements JsPsychPlugin<Info> {
   static info = info;
 
-  constructor(private jsPsych: JsPsych) { }
+  constructor(private jsPsych: JsPsych) {}
 
   async trial(display_element: HTMLElement, trial: TrialType<Info>) {
     // Parameter validation
@@ -313,7 +313,7 @@ class StopSignalMmPlugin implements JsPsychPlugin<Info> {
     var go_sound: OscillatorNode | undefined =
       trial.go_modality === "auditory" ? getSound(trial.go_stim as number) : undefined;
     var stop_sound: OscillatorNode | undefined =
-      trial.stop_modality === "auditory" && trial.stop_signal_delay > 0
+      trial.stop_modality === "auditory" && (trial.stop_signal_delay > 0 || trial.audio_calibration)
         ? getSound(trial.stop_stim as number, trial.stop_audio_type)
         : undefined;
 

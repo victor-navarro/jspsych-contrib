@@ -141,12 +141,13 @@
   const audio_calib = {
     type: jsPsychStopSignalMm,
     audio_calibration: true,
-    go_modality: 'auditory',
-    go_stim: 1000,
+    stop_modality: 'auditory',
+    stop_stim: 500,
     choices: [" "],
     calibration_prompt: 'Adjust your volume so that you can hear the tone clearly.<br><br>Press SPACEBAR to continue.',
   }
-  jsPsych.run([calib_inst, audio_calib, vis_trial_inst, vis_trial_block, aud_trial_inst, aud_trial_block, vis_aud_trial_inst, vis_aud_trial_block, aud_vis_trial_inst, aud_vis_trial_block])
+  jsPsych.run([calib_inst, audio_calib])
+  // jsPsych.run([calib_inst, audio_calib, vis_trial_inst, vis_trial_block, aud_trial_inst, aud_trial_block, vis_aud_trial_inst, vis_aud_trial_block, aud_vis_trial_inst, aud_vis_trial_block])
 
 </script>
 
